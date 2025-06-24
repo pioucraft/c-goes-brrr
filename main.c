@@ -1,4 +1,5 @@
 #include "playmusic.h"
+#include <time.h>
 #include <stdio.h>
 #include <ncurses.h>
 #include <stdlib.h>
@@ -44,6 +45,16 @@ int main() {
     if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) {
         fprintf(stderr, "Mix_OpenAudio error: %s\n", Mix_GetError());
         return 1;
+    }
+
+    for(int i = 0; i < 100; i++) {
+        srand(time(NULL) + i);
+        int randomIndex = rand() % fileCount;
+        int randomIndex2 = rand() % fileCount;
+        char* temp = fileList[randomIndex];
+        char* temp2 = fileList[randomIndex2];
+        fileList[randomIndex] = temp2;
+        fileList[randomIndex2] = temp;
     }
 
 
