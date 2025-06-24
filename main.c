@@ -9,6 +9,8 @@
 
 int main() {
     initscr();
+    start_color();
+    init_pair(1, COLOR_CYAN, COLOR_BLACK);
     cbreak();
     noecho();
     nodelay(stdscr, TRUE); // Non-blocking input
@@ -34,7 +36,7 @@ int main() {
     }
     closedir(dir);
 
-        if (SDL_Init(SDL_INIT_AUDIO) < 0) {
+    if (SDL_Init(SDL_INIT_AUDIO) < 0) {
         fprintf(stderr, "SDL init error: %s\n", SDL_GetError());
         return 1;
     }
@@ -48,7 +50,7 @@ int main() {
     int filesIndex = 0;
     while(1) {
         char* filename = fileList[filesIndex % fileCount];
-        playMusic(filename);
+        playMusic(filename, fileList, fileCount);
         filesIndex++;
     }
 

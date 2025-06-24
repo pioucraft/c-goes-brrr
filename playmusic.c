@@ -33,7 +33,7 @@ char* generateSliderFromPercentage(double percentage, int length) {
 }
 
 
-int playMusic(char* filename) {
+int playMusic(char* filename, char** filesList, int fileCount) {
     Mix_Music* music = Mix_LoadMUS(filename);
     if (!music) {
         fprintf(stderr, "Mix_LoadMUS error: %s\n", Mix_GetError());
@@ -57,7 +57,20 @@ int playMusic(char* filename) {
         }
         else
             mvprintw(0, 0, "Playback position: Unknown");
+
         mvprintw(3, 1, "File name : %s", filename);
+
+        for (int i = 0; fileCount > i; i++) {
+            if (filesList[i] != NULL) {
+                if (filesList[i] == filename) {
+                    attron(COLOR_PAIR(1));
+                    mvprintw(5 + i, 1, "-> %s", filesList[i]);
+                    attroff(COLOR_PAIR(1));
+                } else {;
+                    mvprintw(5 + i, 1, "%s", filesList[i]);
+                }
+            }
+        }
 
         refresh();
 
@@ -77,6 +90,7 @@ int playMusic(char* filename) {
                 break;
             case 'n':
                 isPlaying = false;
+                Mix_FreeMusic(music);
                 return 1;
 
             default:
