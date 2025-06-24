@@ -34,16 +34,6 @@ char* generateSliderFromPercentage(double percentage, int length) {
 
 
 int playMusic(char* filename) {
-    if (SDL_Init(SDL_INIT_AUDIO) < 0) {
-        fprintf(stderr, "SDL init error: %s\n", SDL_GetError());
-        return 1;
-    }
-
-    if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) {
-        fprintf(stderr, "Mix_OpenAudio error: %s\n", Mix_GetError());
-        return 1;
-    }
-
     Mix_Music* music = Mix_LoadMUS(filename);
     if (!music) {
         fprintf(stderr, "Mix_LoadMUS error: %s\n", Mix_GetError());
@@ -52,7 +42,8 @@ int playMusic(char* filename) {
 
     Mix_PlayMusic(music, -1);
 
-    while (1) {
+    bool isPlaying = true;
+    while (isPlaying) {
         clear();
 
         double pos = Mix_GetMusicPosition(music);
@@ -66,6 +57,7 @@ int playMusic(char* filename) {
         }
         else
             mvprintw(0, 0, "Playback position: Unknown");
+        mvprintw(3, 1, "File name : %s", filename);
 
         refresh();
 
@@ -77,17 +69,16 @@ int playMusic(char* filename) {
             case 'r':
                 Mix_ResumeMusic();
                 break;
-            case 's':
-                Mix_HaltMusic();
-                Mix_PlayMusic(music, -1);
-                break;
-            case 'q':
-                goto end;
-                break;
             case 'f':
                 Mix_SetMusicPosition(Mix_GetMusicPosition(music) + 10);
+                break;
             case 'b':
                 Mix_SetMusicPosition(Mix_GetMusicPosition(music) - 10);
+                break;
+            case 'n':
+                isPlaying = false;
+                return 1;
+
             default:
                 break;
         }
@@ -95,11 +86,6 @@ int playMusic(char* filename) {
         usleep(50000); // Sleep for 50ms
     }
 
-end:
-    endwin();
-    Mix_FreeMusic(music);
-    Mix_CloseAudio();
-    SDL_Quit();
     return 0;
 }
 
