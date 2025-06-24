@@ -40,10 +40,9 @@ int playMusic(char* filename, char** filesList, int fileCount) {
         return 1;
     }
 
-    Mix_PlayMusic(music, -1);
+    Mix_PlayMusic(music, 1);
 
-    bool isPlaying = true;
-    while (isPlaying) {
+    while (Mix_PlayingMusic()) {
         clear();
 
         double pos = Mix_GetMusicPosition(music);
@@ -89,7 +88,6 @@ int playMusic(char* filename, char** filesList, int fileCount) {
                 Mix_SetMusicPosition(Mix_GetMusicPosition(music) - 10);
                 break;
             case 'n':
-                isPlaying = false;
                 Mix_FreeMusic(music);
                 return 1;
 
@@ -99,7 +97,8 @@ int playMusic(char* filename, char** filesList, int fileCount) {
 
         usleep(50000); // Sleep for 50ms
     }
+    Mix_FreeMusic(music);
 
-    return 0;
+    return 1;
 }
 
